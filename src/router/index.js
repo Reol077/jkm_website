@@ -11,6 +11,12 @@ const routes = [
   },
 
   {
+    path: '/forget',
+    name: 'forget',
+    component: () => import('../views/forgetPass.vue')
+  },
+
+  {
     path: '/home',
     name: 'home',
     component: () => import('../views/home/userHome.vue')
@@ -26,7 +32,7 @@ router.beforeEach((to, from, next) => {
   NProgress.start() // 进度条开始
   next()
 })
- 
+
 router.afterEach(() => {
   NProgress.done() // 进度条结束
 })

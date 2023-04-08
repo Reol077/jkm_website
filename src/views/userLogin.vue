@@ -254,19 +254,31 @@ export default {
               console.log(res.data)
               if (res.data.code == 60000) {
                 this.active++;
-                let submitParams = {}
-                submitParams.email = this.regUser.email
-                submitParams.name = this.regUser.name
-                submitParams.number = this.regUser.number
-                submitParams.password = this.regUser.password
-                submitParams.type = this.userType
-                this.$http.post('emailVerity', { params: submitParams }).then(res => {
-                  console.log(submitParams)
+                const formData = new FormData();
+                formData.append('email', this.regUser.email);
+                formData.append('name', this.regUser.name);
+                formData.append('number', this.regUser.number);
+                formData.append('password', this.regUser.password);
+                formData.append('type', this.userType);
+                this.$http.post(
+                  '/emailVerity', formData, {
+                  headers: {
+                    'Content-Type': 'multipart/form-data'
+                  }
+                }).then(res => {
                   console.log(res)
-                  if (!res.data.success) this.$message({
-                    message: "验证码发送失败，请刷新重试",
-                    type: 'error'
-                  })
+                  if (res.data.success) {
+                    this.$message({
+                      message: "验证码发送成功",
+                      type: "success"
+                    })
+                  }
+                  else {
+                    this.$message({
+                      message: "验证码发送失败，请刷新重试",
+                      type: 'error'
+                    })
+                  }
                 })
               } else if (res.data.code == 60002) {
                 this.$message({
@@ -296,15 +308,19 @@ export default {
       }
     },
     userRegister() {
-      let submitParams = {}
-      submitParams.code = this.regUser.emailCode
-      submitParams.email = this.regUser.email
-      submitParams.name = this.regUser.name
-      submitParams.number = this.regUser.number
-      submitParams.password = this.regUser.password
-      submitParams.type = this.userType
+      const formData = new FormData();
+      formData.append('code', this.regUser.emailCode);
+      formData.append('email', this.regUser.email);
+      formData.append('name', this.regUser.name);
+      formData.append('number', this.regUser.number);
+      formData.append('password', this.regUser.password);
+      formData.append('type', this.userType);
 
-      this.$http.post('register', { params: submitParams }).then(res => {
+      this.$http.post('register', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(res => {
         console.log(res)
         if (res.data.success) {
           this.$message({
@@ -312,6 +328,11 @@ export default {
             type: 'success'
           })
           this.userLogin()
+        } else {
+          this.$message({
+            message: res.data.msg,
+            type: 'error'
+          })
         }
       })
 
@@ -448,8 +469,6 @@ export default {
   padding-top: 18px;
   width: 100%;
   flex: 2;
-  display: flex;
-  flex-direction: column;
   display: flex;
   flex-direction: column;
   align-items: center;
