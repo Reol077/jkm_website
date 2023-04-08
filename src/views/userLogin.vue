@@ -139,6 +139,7 @@
             <div style="flex: 2">
               <el-button type="primary" style="background-color:#409eff;border: 1px solid #409eff;" round
                 @click="changeToRegiest">还没有账户？点击注册</el-button>
+                <router-link to="/forget" class="forget">忘记密码</router-link>
             </div>
           </div>
         </transition>
@@ -183,12 +184,12 @@ export default {
         code: [{ required: true, message: "请输入验证码", trigger: "blur" }]
       },
       regUser: {
-        number: "022020208",
-        name: "吴双",
-        email: "2571219329@qq.com",
-        password: "123456",
-        type: "老师",
-        code: "cccc",
+        number: "",
+        name: "",
+        email: "",
+        password: "",
+        type: "",
+        code: "",
         emailCode: ""
       },
       regRules: {
@@ -247,9 +248,7 @@ export default {
     nextItem2(data) {
       this.$refs[data].validate(valid => {
         if (valid) {
-          this.$http.get('/imageCode', {
-            params: { imageCode: this.regUser.code }
-          })
+          this.$http.get(`/imageCode/${this.regUser.code}`)
             .then(res => {
               console.log(res.data)
               if (res.data.code == 60000) {
@@ -485,6 +484,18 @@ export default {
 
 .pwdArea input:focus {
   border: 2px solid #409eff;
+}
+
+.forget{
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  margin-top: 10px;
+  color: gray;
+
+  &:hover{
+    text-decoration:underline;
+  }
 }
 
 .btnArea {
