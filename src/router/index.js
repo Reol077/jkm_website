@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -8,11 +10,17 @@ const routes = [
     component: () => import('../views/userLogin.vue')
   },
 
+  {
+    path: '/home',
+    name: 'home',
+    component: () => import('../views/userHome.vue')
+  },
+
 
   {
     path: "/test",
     name: "test",
-    component:()=>import('../views/testPl.vue')
+    component: () => import('../views/testPl.vue')
   }
 ]
 
@@ -20,5 +28,15 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  NProgress.start() // 进度条开始
+  next()
+})
+ 
+router.afterEach(() => {
+  NProgress.done() // 进度条结束
+})
+
 
 export default router

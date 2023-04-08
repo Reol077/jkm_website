@@ -14,7 +14,7 @@
         <transition name="animate__animated animate__bounce" enter-active-class="animate__fadeInUp"
           leave-active-class="animate__zoomOut" appear>
           <!-- 密码和用户名框 -->
-          <el-form :model="loginUser" class="pwdArea" v-show="isShow" :rules="loginRules">
+          <el-form :model="loginUser" class="pwdArea" v-show="isShow" :rules="loginRules" ref="loginForm">
             <el-form-item style="flex: 1;justify-content: center;display: flex;align-items: center" prop="number">
               <el-input v-model="loginUser.number" style="width: 170px;" placeholder="学号/工号"></el-input>
             </el-form-item>
@@ -33,7 +33,7 @@
           <!-- 登录注册按钮 -->
           <div v-show="isShow" class="btnArea">
             <el-button type="primary" round style="background-color: #409eff;letter-spacing: 5px;"
-              @click="UserLogin">登录</el-button>
+              @click="userLogin('loginForm')">登录</el-button>
           </div>
         </transition>
       </div>
@@ -48,7 +48,7 @@
         <transition name="animate__animated animate__bounce" enter-active-class="animate__fadeInUp"
           leave-active-class="animate__zoomOut" appear>
           <!--注册表单-->
-          <el-form :model="regUser" v-show="!isShow" class="registForm" :rules="regRules" ref="form">
+          <el-form :model="regUser" v-show="!isShow" class="registForm" :rules="regRules" ref="regForm">
             <div v-if="active == 1">
               <el-form-item style="flex: 1;display: flex;justify-content: center;align-items: center" prop="number">
                 学&nbsp;号/工&nbsp;号:
@@ -66,7 +66,7 @@
               <!-- 下一步 -->
               <el-form-item v-show="!isShow" class="nextBtn">
                 <el-button type="primary" round style="background-color: #409eff;letter-spacing: 5px"
-                  @click="nextItem('form')">下一步</el-button>
+                  @click="nextItem('regForm')">下一步</el-button>
               </el-form-item>
             </div>
             <div v-if="active == 2">
@@ -96,7 +96,7 @@
               <!-- 下一步 -->
               <el-form-item v-show="!isShow" class="nextBtn">
                 <el-button type="primary" round style="background-color: #409eff;letter-spacing: 5px"
-                  @click="nextItem2('form')">下一步</el-button>
+                  @click="nextItem2('regForm')">下一步</el-button>
               </el-form-item>
             </div>
             <div v-if="active == 3">
@@ -171,7 +171,7 @@ export default {
       isShow: true,
       isItem: false,
       imgUrl: "",
-      active: 3,
+      active: 1,
       loginUser: {
         number: "",
         password: "",
@@ -306,6 +306,40 @@ export default {
 
       this.$http.post('register', { params: submitParams }).then(res => {
         console.log(res)
+        if (res.data.success) {
+          this.$message({
+            message: "注册成功，即将自动登录",
+            type: 'success'
+          })
+          this.userLogin()
+        }
+      })
+
+    },
+    userLogin(data) {
+      this.$refs[data].validate(valid => {
+        if (valid) {
+          this.$http.get('login', { params: this.loginUser }).then(res => {
+            if (res.data.success) {
+              this.$message({
+                message: "登录成功",
+                type: "success"
+              })
+              this.$router.push('/home')
+            } else {
+              this.$message({
+                message: res.data.msg,
+                type: "error"
+              })
+            }
+          }).catch(error => {
+            console.log(error)
+            this.$message({
+              message: "登录超时",
+              type: "error"
+            })
+          })
+        }
       })
 
     },
