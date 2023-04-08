@@ -102,7 +102,7 @@
             <div v-if="active == 3">
               <el-form-item style="flex: 1;justify-content: center;display: flex;align-items: center" prop="emailCode">
                 邮箱验证码:
-                <el-input v-model="regUser.emailcode" style="width: 170px; margin-left: 10px;"
+                <el-input v-model="regUser.emailCode" style="width: 170px; margin-left: 10px;"
                   placeholder="邮箱验证码"></el-input>
               </el-form-item>
               <el-form-item v-show="!isShow" class="backBtn">
@@ -142,10 +142,6 @@
             </div>
           </div>
         </transition>
-        <!-- 用户输入用户名时展示头像以及姓名 -->
-        <!--           <div>-->
-
-        <!--           </div>-->
         <transition name="animate__animated animate__bounce" enter-active-class="animate__fadeInUp"
           leave-active-class="animate__zoomOut" appear>
           <!-- 用户注册的时候展示信息 -->
@@ -175,7 +171,7 @@ export default {
       isShow: true,
       isItem: false,
       imgUrl: "",
-      active: 1,
+      active: 3,
       loginUser: {
         number: "",
         password: "",
@@ -192,7 +188,8 @@ export default {
         email: "2571219329@qq.com",
         password: "123456",
         type: "老师",
-        code: "cccc"
+        code: "cccc",
+        emailCode: ""
       },
       regRules: {
         email: [
@@ -219,11 +216,24 @@ export default {
       },
     }
   },
+  computed: {
+    userType() {
+      return this.regUser.type === "老师" ? 1 : 0;
+    }
+  },
   created() {
     this.getCodeImage()
   },
 
   methods: {
+    getCodeImage() {
+      this.$http.get('/codeImage', {
+        responseType: "blob",
+      }).then(res => {
+        console.log(res.data)
+        this.imgUrl = window.URL.createObjectURL(res.data);
+      })
+    },
     nextItem(data) {
       this.$refs[data].validate(valid => {
         if (valid) {
@@ -242,11 +252,36 @@ export default {
           })
             .then(res => {
               console.log(res.data)
-              if (res.data.code == 6000) {
+              if (res.data.code == 60000) {
                 this.active++;
+                let submitParams = {}
+                submitParams.email = this.regUser.email
+                submitParams.name = this.regUser.name
+                submitParams.number = this.regUser.number
+                submitParams.password = this.regUser.password
+                submitParams.type = this.userType
+                this.$http.post('emailVerity', { params: submitParams }).then(res => {
+                  console.log(submitParams)
+                  console.log(res)
+                  if (!res.data.success) this.$message({
+                    message: "验证码发送失败，请刷新重试",
+                    type: 'error'
+                  })
+                })
+              } else if (res.data.code == 60002) {
+                this.$message({
+                  message: "验证码错误",
+                  type: "error"
+                })
               }
             }
-            )
+            ).catch(error => {
+              console.log(error)
+              this.$message({
+                message: "请求超时，请检查网络",
+                type: "error"
+              });
+            });
           if (this.active >= 3) {
             this.active = 3;
           }
@@ -254,10 +289,25 @@ export default {
       })
     },
     backItem() {
+      this.getCodeImage()
       this.active--;
       if (this.active <= 1) {
         this.active = 1;
       }
+    },
+    userRegister() {
+      let submitParams = {}
+      submitParams.code = this.regUser.emailCode
+      submitParams.email = this.regUser.email
+      submitParams.name = this.regUser.name
+      submitParams.number = this.regUser.number
+      submitParams.password = this.regUser.password
+      submitParams.type = this.userType
+
+      this.$http.post('register', { params: submitParams }).then(res => {
+        console.log(res)
+      })
+
     },
     changeToRegiest() {
       this.styleObj.bordertoprightradius = '0px'
@@ -276,14 +326,6 @@ export default {
       this.styleObj.rightDis = '0px'
       this.isShow = !this.isShow
       this.getCodeImage()
-    },
-    getCodeImage() {
-      this.$http.get('/codeImage', {
-        responseType: "blob",
-      }).then(res => {
-        console.log(res.data)
-        this.imgUrl = window.URL.createObjectURL(res.data);
-      })
     },
   }
 }

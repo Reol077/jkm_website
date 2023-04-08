@@ -11,7 +11,7 @@ import '../src/assets/global.css'
 const app = createApp(App)
 
 const axiosInstance = axios.create({
-    baseURL: 'http://124.222.100.205:8080',
+    baseURL: '/api',
     withCredentials: true
 })
 
