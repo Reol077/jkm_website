@@ -75,6 +75,11 @@
                 <el-input placeholder="请输入密码" style="width: 165px;margin-left: 10px" v-model="regUser.password"
                   show-password></el-input>
               </el-form-item>
+              <el-form-item style="flex: 1;display: flex;justify-content: center;align-items: center;" prop="repass">
+                确&nbsp;认&nbsp;密&nbsp;码:
+                <el-input placeholder="请确认密码" style="width: 165px;margin-left: 10px" v-model="regUser.repass"
+                  show-password></el-input>
+              </el-form-item>
               <el-form-item style="flex: 1;display: flex;justify-content: center;align-items: center;" prop="type">
                 类&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;型:
                 <el-radio-group v-model="regUser.type" style="padding-left: 10px;">
@@ -139,7 +144,7 @@
             <div style="flex: 2">
               <el-button type="primary" style="background-color:#409eff;border: 1px solid #409eff;" round
                 @click="changeToRegiest">还没有账户？点击注册</el-button>
-                <router-link to="/forget" class="forget">忘记密码</router-link>
+              <router-link to="/forget" class="forget">忘记密码</router-link>
             </div>
           </div>
         </transition>
@@ -172,7 +177,7 @@ export default {
       isShow: true,
       isItem: false,
       imgUrl: "",
-      active: 1,
+      active: 2,
       loginUser: {
         number: "",
         password: "",
@@ -188,6 +193,7 @@ export default {
         name: "",
         email: "",
         password: "",
+        repass: "",
         type: "",
         code: "",
         emailCode: ""
@@ -204,6 +210,19 @@ export default {
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         number: [{ required: true, message: "请输入工号", trigger: "blur" }],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        repass: [{
+          required: true, 
+          validator: (rule, value, callback) => {
+            if (value === "") {
+              callback(new Error("请再次输入密码"));
+            } else if (value !== this.regUser.password) {
+              callback(new Error("两次输入密码不一致!"));
+            } else {
+              callback();
+            }
+          }, 
+          trigger: "blur"
+        }],
         type: [{ required: true, message: "请选择身份", trigger: "change" }],
         code: [{ required: true, message: "请输入验证码", trigger: "blur" }],
         emailCode: [{ required: true, message: "请输入邮箱验证码", trigger: "blur" }]
@@ -482,15 +501,15 @@ export default {
   border: 2px solid #409eff;
 }
 
-.forget{
+.forget {
   display: block;
   text-align: center;
   text-decoration: none;
   margin-top: 10px;
   color: gray;
 
-  &:hover{
-    text-decoration:underline;
+  &:hover {
+    text-decoration: underline;
   }
 }
 
