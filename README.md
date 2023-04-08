@@ -10,6 +10,7 @@ npm install
 npm run serve
 ```
 
+<<<<<<< HEAD
 ### Compiles and minifies for production
 ```
 npm run build
@@ -22,3 +23,10 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+=======
+## 打包
+
+```
+npm run build
+```
+>>>>>>> 63af3b41 (修改了README.md)
