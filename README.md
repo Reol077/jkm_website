@@ -1,32 +1,25 @@
 # 健康码上传检测网站
 
-## Project setup
+## 克隆项目
+
 ```
-npm install
+git clone https://github.com/Reol077/jkm_website.git
 ```
 
-### Compiles and hot-reloads for development
+## 安装依赖
+
+```
+cd jkm_website && npm install
+```
+
+## 运行项目
+
 ```
 npm run serve
 ```
 
-<<<<<<< HEAD
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-=======
 ## 打包
 
 ```
 npm run build
 ```
->>>>>>> 63af3b41 (修改了README.md)
