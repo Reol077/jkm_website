@@ -252,7 +252,6 @@ export default {
             .then(res => {
               console.log(res.data)
               if (res.data.code == 60000) {
-                this.active++;
                 const formData = new FormData();
                 formData.append('email', this.regUser.email);
                 formData.append('name', this.regUser.name);
@@ -265,31 +264,30 @@ export default {
                     'Content-Type': 'multipart/form-data'
                   }
                 }).then(res => {
-                  console.log(res)
                   if (res.data.success) {
+                    this.active++;
                     this.$message({
-                      message: "验证码发送成功",
+                      message: res.data.msg,
                       type: "success"
                     })
                   }
                   else {
                     this.$message({
-                      message: "验证码发送失败，请刷新重试",
+                      message: res.data.msg,
                       type: 'error'
                     })
                   }
                 })
               } else if (res.data.code == 60002) {
                 this.$message({
-                  message: "验证码错误",
+                  message: res.data.msg,
                   type: "error"
                 })
               }
             }
             ).catch(error => {
-              console.log(error)
               this.$message({
-                message: "请求超时，请检查网络",
+                message: error,
                 type: "error"
               });
             });
@@ -320,7 +318,6 @@ export default {
           'Content-Type': 'multipart/form-data'
         }
       }).then(res => {
-        console.log(res)
         if (res.data.success) {
           this.$message({
             message: "注册成功，即将自动登录",
@@ -342,7 +339,7 @@ export default {
           this.$http.get('login', { params: this.loginUser }).then(res => {
             if (res.data.success) {
               this.$message({
-                message: "登录成功",
+                message: res.data.msg,
                 type: "success"
               })
               this.$router.push('/home')
@@ -353,9 +350,8 @@ export default {
               })
             }
           }).catch(error => {
-            console.log(error)
             this.$message({
-              message: "登录超时",
+              message: error,
               type: "error"
             })
           })
