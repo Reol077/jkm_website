@@ -395,30 +395,21 @@ export default {
                 'Content-Type': 'multipart/form-data'
               }
             }).then(res => {
-              const cookieStr = document.cookie
-              if (cookieStr) {
+              if (res.data.success) {
+                const cookieStr = document.cookie
                 const token = cookieStr.split('=')
                 console.log(cookieStr)
-                window.sessionStorage.setItem("token", token)
-                // 2. 通过编程式路由导航跳转到后台主页,路由地址是 /home
+                window.sessionStorage.setItem("token", token[1])
+                this.$message({
+                  showClose: true,
+                  message: res.data.msg,
+                  type: 'success'
+                })
                 this.$router.push("/home")
-                if (res.data.success) {
-                  this.$message({
-                    showClose: true,
-                    message: res.data.msg,
-                    type: 'success'
-                  })
-                } else {
-                  this.$message({
-                    showClose: true,
-                    message: res.data.msg,
-                    type: 'error'
-                  })
-                }
               } else {
                 this.$message({
                   showClose: true,
-                  message: "cookie为空",
+                  message: res.data.msg,
                   type: 'error'
                 })
               }
@@ -438,30 +429,21 @@ export default {
                 'Content-Type': 'multipart/form-data'
               }
             }).then(res => {
-              const cookieStr = document.cookie
-              if (cookieStr) {
+              if (res.data.success) {
+                const cookieStr = document.cookie
                 const token = cookieStr.split('=')
                 console.log(cookieStr)
-                window.sessionStorage.setItem("token", token)
-                // 2. 通过编程式路由导航跳转到后台主页,路由地址是 /home
+                window.sessionStorage.setItem("token", token[1])
+                this.$message({
+                  showClose: true,
+                  message: res.data.msg,
+                  type: 'success'
+                })
                 this.$router.push("/home")
-                if (res.data.success) {
-                  this.$message({
-                    showClose: true,
-                    message: res.data.msg,
-                    type: 'success'
-                  })
-                } else {
-                  this.$message({
-                    showClose: true,
-                    message: res.data.msg,
-                    type: 'error'
-                  })
-                }
               } else {
                 this.$message({
                   showClose: true,
-                  message: "cookie为空",
+                  message: res.data.msg,
                   type: 'error'
                 })
               }
@@ -471,6 +453,12 @@ export default {
                 message: error.msg,
                 type: 'error'
               })
+            })
+          } else {
+            this.$message({
+              message: "输入有误",
+              type: "error",
+              showClose: true
             })
           }
         }
