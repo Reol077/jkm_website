@@ -1,0 +1,65 @@
+{
+  "id": "3660515",
+  "name": "jkm",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1348258",
+      "name": "收回",
+      "font_class": "shouhui-left",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "34966480",
+      "name": "收回-copy",
+      "font_class": "shouhui-right",
+      "unicode": "eb2d",
+      "unicode_decimal": 60205
+    },
+    {
+      "icon_id": "5387672",
+      "name": "云上传",
+      "font_class": "yunshangchuan",
+      "unicode": "eb2c",
+      "unicode_decimal": 60204
+    },
+    {
+      "icon_id": "765433",
+      "name": "历史记录",
+      "font_class": "shouye",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "2076313",
+      "name": " 行程",
+      "font_class": "hangcheng",
+      "unicode": "e8a1",
+      "unicode_decimal": 59553
+    },
+    {
+      "icon_id": "4942656",
+      "name": "上传",
+      "font_class": "shangchuan",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "19614462",
+      "name": "健康码",
+      "font_class": "jiankangma",
+      "unicode": "e669",
+      "unicode_decimal": 58985
+    },
+    {
+      "icon_id": "1309",
+      "name": "退出",
+      "font_class": "tuichu",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    }
+  ]
+}

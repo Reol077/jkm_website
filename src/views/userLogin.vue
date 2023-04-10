@@ -16,15 +16,13 @@
           <!-- 密码和用户名框 -->
           <el-form :model="loginUser" class="pwdArea" v-show="isShow" :rules="loginRules" ref="loginForm">
             <el-form-item style="flex: 1;justify-content: center;display: flex;align-items: center" prop="number">
-              <el-input v-model="loginUser.number" style="width: 170px;" placeholder="学号/工号"></el-input>
+              <el-input v-model="loginUser.number" style="width: 170px;" placeholder="工号/邮箱"></el-input>
             </el-form-item>
             <el-form-item style="flex: 1;justify-content: center;display: flex;align-items: center" prop="password">
               <el-input v-model="loginUser.password" style="width: 170px;" placeholder="密码"></el-input>
             </el-form-item>
-            <el-form-item style="flex: 1;justify-content: center;display: flex;align-items: center" prop="code">
-              <el-input v-model="loginUser.code" style="width: 85px;" placeholder="验证码"></el-input>
-              <img :src="imgUrl" style="height: 30px; width: 80px;cursor:pointer;margin-left: 5px;"
-                @click="getCodeImage()" />
+            <el-form-item style="width: 170px;">
+              <el-checkbox v-model="loginUser.remember" style="color:gray">记住密码</el-checkbox>
             </el-form-item>
           </el-form>
         </transition>
@@ -171,7 +169,6 @@
 
 <script>
 export default {
-  name: 'loginRegister',
   data() {
     return {
       isShow: true,
@@ -181,12 +178,11 @@ export default {
       loginUser: {
         number: "",
         password: "",
-        code: ""
+        remember: false
       },
       loginRules: {
-        number: [{ required: true, message: "请输入工号", trigger: "blur" }],
+        number: [{ required: true, message: "请输入工号/邮箱", trigger: "blur" }],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        code: [{ required: true, message: "请输入验证码", trigger: "blur" }]
       },
       regUser: {
         number: "",
@@ -211,7 +207,7 @@ export default {
         number: [{ required: true, message: "请输入工号", trigger: "blur" }],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
         repass: [{
-          required: true, 
+          required: true,
           validator: (rule, value, callback) => {
             if (value === "") {
               callback(new Error("请再次输入密码"));
@@ -220,7 +216,7 @@ export default {
             } else {
               callback();
             }
-          }, 
+          },
           trigger: "blur"
         }],
         type: [{ required: true, message: "请选择身份", trigger: "change" }],
@@ -243,11 +239,20 @@ export default {
   },
   created() {
     this.getCodeImage()
+    // 在页面加载时从本地存储中读取用户信息
+    const userStr = localStorage.getItem('user')
+    if (userStr) {
+      // 如果用户信息存在，将其解析为对象并填充到登录表单中
+      const user = JSON.parse(userStr)
+      this.loginUser.number = user.number
+      this.loginUser.password = user.password
+      this.loginUser.remember = true
+    }
   },
 
   methods: {
     getCodeImage() {
-      this.$http.get('/codeImage', {
+      this.$http.get('/verity/codeImage', {
         responseType: "blob",
       }).then(res => {
         console.log(res.data)
@@ -267,7 +272,11 @@ export default {
     nextItem2(data) {
       this.$refs[data].validate(valid => {
         if (valid) {
-          this.$http.get(`/imageCode/${this.regUser.code}`)
+          this.$message({
+            message: "即将发送验证码，请查看邮箱",
+            showClose: true
+          })
+          this.$http.get(`/verity/imageCode/${this.regUser.code}`)
             .then(res => {
               console.log(res.data)
               if (res.data.code == 60000) {
@@ -278,7 +287,7 @@ export default {
                 formData.append('password', this.regUser.password);
                 formData.append('type', this.userType);
                 this.$http.post(
-                  '/emailVerity', formData, {
+                  '/verity/emailVerity', formData, {
                   headers: {
                     'Content-Type': 'multipart/form-data'
                   }
@@ -286,12 +295,14 @@ export default {
                   if (res.data.success) {
                     this.active++;
                     this.$message({
+                      showClose: true,
                       message: res.data.msg,
                       type: "success"
                     })
                   }
                   else {
                     this.$message({
+                      showClose: true,
                       message: res.data.msg,
                       type: 'error'
                     })
@@ -299,6 +310,7 @@ export default {
                 })
               } else if (res.data.code == 60002) {
                 this.$message({
+                  showClose: true,
                   message: res.data.msg,
                   type: "error"
                 })
@@ -306,7 +318,8 @@ export default {
             }
             ).catch(error => {
               this.$message({
-                message: error,
+                showClose: true,
+                message: error.msg,
                 type: "error"
               });
             });
@@ -332,51 +345,146 @@ export default {
       formData.append('password', this.regUser.password);
       formData.append('type', this.userType);
 
-      this.$http.post('register', formData, {
+      this.$http.post('/verity/register', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       }).then(res => {
+        console.log(res)
         if (res.data.success) {
           this.$message({
-            message: "注册成功，即将自动登录",
+            showClose: true,
+            message: "注册成功，即将返回登录",
             type: 'success'
           })
-          this.userLogin()
+          this.active = 1
+          this.regUser.number = ""
+          this.regUser.name = ""
+          this.regUser.email = ""
+          this.regUser.password = ""
+          this.regUser.repass = ""
+          this.regUser.type = ""
+          this.regUser.code = ""
+          this.regUser.email = ""
+          this.changeToLogin()
         } else {
           this.$message({
+            showClose: true,
             message: res.data.msg,
             type: 'error'
           })
         }
+      }).catch(error => {
+        this.$message({
+          showClose: true,
+          message: error.msg,
+          type: "error"
+        })
       })
-
     },
     userLogin(data) {
       this.$refs[data].validate(valid => {
         if (valid) {
-          this.$http.get('login', { params: this.loginUser }).then(res => {
-            if (res.data.success) {
+          this.handleLogin()
+          if (/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(this.loginUser.number)) {
+            const formData = new FormData();
+            formData.append('email', this.loginUser.number);
+            formData.append('password', this.loginUser.password);
+            this.$http.post('/verity/loginByEmail', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            }).then(res => {
+              const cookieStr = document.cookie
+              if (cookieStr) {
+                const token = cookieStr.split('=')
+                console.log(cookieStr)
+                window.sessionStorage.setItem("token", token)
+                // 2. 通过编程式路由导航跳转到后台主页,路由地址是 /home
+                this.$router.push("/home")
+                if (res.data.success) {
+                  this.$message({
+                    showClose: true,
+                    message: res.data.msg,
+                    type: 'success'
+                  })
+                } else {
+                  this.$message({
+                    showClose: true,
+                    message: res.data.msg,
+                    type: 'error'
+                  })
+                }
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: "cookie为空",
+                  type: 'error'
+                })
+              }
+            }).catch(error => {
               this.$message({
-                message: res.data.msg,
-                type: "success"
+                showClose: true,
+                message: error.msg,
+                type: 'error'
               })
-              this.$router.push('/home')
-            } else {
-              this.$message({
-                message: res.data.msg,
-                type: "error"
-              })
-            }
-          }).catch(error => {
-            this.$message({
-              message: error,
-              type: "error"
             })
-          })
+          } else if (/^[a-zA-Z0-9]+$/.test(this.loginUser.number)) {
+            const formData = new FormData();
+            formData.append('number', this.loginUser.number);
+            formData.append('password', this.loginUser.password);
+            this.$http.post('/verity/loginByNumber', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            }).then(res => {
+              const cookieStr = document.cookie
+              if (cookieStr) {
+                const token = cookieStr.split('=')
+                console.log(cookieStr)
+                window.sessionStorage.setItem("token", token)
+                // 2. 通过编程式路由导航跳转到后台主页,路由地址是 /home
+                this.$router.push("/home")
+                if (res.data.success) {
+                  this.$message({
+                    showClose: true,
+                    message: res.data.msg,
+                    type: 'success'
+                  })
+                } else {
+                  this.$message({
+                    showClose: true,
+                    message: res.data.msg,
+                    type: 'error'
+                  })
+                }
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: "cookie为空",
+                  type: 'error'
+                })
+              }
+            }).catch(error => {
+              this.$message({
+                showClose: true,
+                message: error.msg,
+                type: 'error'
+              })
+            })
+          }
         }
       })
-
+    },
+    handleLogin() {
+      // 在这里处理登录逻辑，假设登录成功后返回一个包含用户信息的对象 user
+      if (this.loginUser.remember) {
+        // 如果用户选择了“记住密码”，将用户的登录信息保存在本地存储中
+        localStorage.setItem('user', JSON.stringify(this.loginUser))
+      } else {
+        // 否则清除本地存储中的用户信息
+        localStorage.removeItem('user')
+      }
     },
     changeToRegiest() {
       this.styleObj.bordertoprightradius = '0px'
