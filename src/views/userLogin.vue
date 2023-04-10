@@ -177,7 +177,7 @@ export default {
       isShow: true,
       isItem: false,
       imgUrl: "",
-      active: 2,
+      active: 1,
       loginUser: {
         number: "",
         password: "",

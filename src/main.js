@@ -1,9 +1,11 @@
 import { createApp } from 'vue'
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
 import App from './App.vue'
 import router from './router'
 import axios from 'axios'
+// import ElementPlus from 'element-plus'
+// import 'element-plus/dist/index.css'
+import { ElMessage } from 'element-plus'
+import 'element-plus/theme-chalk/el-message.css'
 
 import 'animate.css'
 import '../src/assets/global.css'
@@ -16,7 +18,8 @@ const axiosInstance = axios.create({
 })
 
 app.config.globalProperties.$http = axiosInstance
+app.config.globalProperties.$message = ElMessage
 
-app.use(ElementPlus)
+// app.use(ElementPlus)
 app.use(router)
 app.mount('#app')

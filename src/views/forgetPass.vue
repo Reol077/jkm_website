@@ -81,13 +81,13 @@ export default {
         verificationCode() {
             if (!this.canClick) return;
             this.canClick = !this.canClick;
-            this.getCodeTitle = this.totalTime + "s后重新发送";
+            this.getCodeTitle = "已发送("+this.totalTime + ")";
             let clock = window.setInterval(() => {
                 this.totalTime--;
-                this.getCodeTitle = this.totalTime + "s后重新发送";
+                this.getCodeTitle = "已发送("+this.totalTime + ")";
                 if (this.totalTime < 0) {
                     window.clearInterval(clock);
-                    this.getCodeTitle = "重新发送验证码";
+                    this.getCodeTitle = "已发送("+this.totalTime + ")";
                     this.totalTime = 60;
                     this.canClick = true;
                 }
