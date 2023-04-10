@@ -64,6 +64,7 @@ export default {
       this.direction = !this.direction
     },
     tuichu() {
+      window.sessionStorage.clear()
       this.$router.push('/')
     }
   }

@@ -19,7 +19,7 @@
               <el-input v-model="loginUser.number" style="width: 170px;" placeholder="工号/邮箱"></el-input>
             </el-form-item>
             <el-form-item style="flex: 1;justify-content: center;display: flex;align-items: center" prop="password">
-              <el-input v-model="loginUser.password" style="width: 170px;" placeholder="密码"></el-input>
+              <el-input v-model="loginUser.password" style="width: 170px;" placeholder="密码" show-password></el-input>
             </el-form-item>
             <el-form-item style="width: 170px;">
               <el-checkbox v-model="loginUser.remember" style="color:gray">记住密码</el-checkbox>
