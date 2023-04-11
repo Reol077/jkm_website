@@ -274,7 +274,7 @@ export default {
         if (valid) {
           this.$message({
             message: "即将发送验证码，请查看邮箱",
-            showClose: true
+
           })
           this.$http.get(`/verity/imageCode/${this.regUser.code}`)
             .then(res => {
@@ -295,14 +295,14 @@ export default {
                   if (res.data.success) {
                     this.active++;
                     this.$message({
-                      showClose: true,
+
                       message: res.data.msg,
                       type: "success"
                     })
                   }
                   else {
                     this.$message({
-                      showClose: true,
+
                       message: res.data.msg,
                       type: 'error'
                     })
@@ -310,7 +310,7 @@ export default {
                 })
               } else if (res.data.code == 60002) {
                 this.$message({
-                  showClose: true,
+
                   message: res.data.msg,
                   type: "error"
                 })
@@ -318,7 +318,7 @@ export default {
             }
             ).catch(error => {
               this.$message({
-                showClose: true,
+
                 message: error.msg,
                 type: "error"
               });
@@ -353,10 +353,12 @@ export default {
         console.log(res)
         if (res.data.success) {
           this.$message({
-            showClose: true,
+
             message: "注册成功，即将返回登录",
             type: 'success'
           })
+          this.loginUser.number = this.regUser.number
+          this.loginUser.password = this.regUser.password
           this.active = 1
           this.regUser.number = ""
           this.regUser.name = ""
@@ -369,14 +371,14 @@ export default {
           this.changeToLogin()
         } else {
           this.$message({
-            showClose: true,
+
             message: res.data.msg,
             type: 'error'
           })
         }
       }).catch(error => {
         this.$message({
-          showClose: true,
+
           message: error.msg,
           type: "error"
         })
@@ -401,21 +403,21 @@ export default {
                 console.log(cookieStr)
                 window.sessionStorage.setItem("token", token[1])
                 this.$message({
-                  showClose: true,
+
                   message: res.data.msg,
                   type: 'success'
                 })
                 this.$router.push("/home")
               } else {
                 this.$message({
-                  showClose: true,
+
                   message: res.data.msg,
                   type: 'error'
                 })
               }
             }).catch(error => {
               this.$message({
-                showClose: true,
+
                 message: error.msg,
                 type: 'error'
               })
@@ -435,21 +437,21 @@ export default {
                 console.log(cookieStr)
                 window.sessionStorage.setItem("token", token[1])
                 this.$message({
-                  showClose: true,
+
                   message: res.data.msg,
                   type: 'success'
                 })
                 this.$router.push("/home")
               } else {
                 this.$message({
-                  showClose: true,
+
                   message: res.data.msg,
                   type: 'error'
                 })
               }
             }).catch(error => {
               this.$message({
-                showClose: true,
+
                 message: error.msg,
                 type: 'error'
               })
@@ -458,7 +460,7 @@ export default {
             this.$message({
               message: "输入有误",
               type: "error",
-              showClose: true
+
             })
           }
         }

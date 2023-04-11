@@ -8,7 +8,8 @@
           <span>Code</span>
         </div>
       </div>
-      <el-menu unique-opened :collapse="isCollapse" :collapse-transition="false" :router="true" default-active="/home/history">
+      <el-menu unique-opened :collapse="isCollapse" :collapse-transition="false" :router="true"
+        default-active="/home/history">
         <el-sub-menu index="1">
           <template #title>
             <i class="iconfont icon-shangchuan"></i>
@@ -64,6 +65,9 @@ export default {
       this.direction = !this.direction
     },
     tuichu() {
+      this.$http.get('/verity/logout').then(res => {
+        console.log(res)
+      })
       window.sessionStorage.clear()
       this.$router.push('/')
     }
