@@ -3,7 +3,7 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
 const routes = [
-  { path: '/', redirect: '/login' },
+  { path: '/', redirect: '/home' },
   {
     path: '/login',
     name: 'login',
@@ -41,7 +41,7 @@ router.beforeEach((to, from, next) => {
   //    next()放行 next('/login) 强制跳转
   if (to.path === '/login' || to.path === '/forget') return next()
   // 获取token
-  const tokenStr = window.sessionStorage.getItem('token')
+  const tokenStr = window.localStorage.getItem('token')
   if (!tokenStr) return next('/login')
   NProgress.start() // 进度条开始
   next()

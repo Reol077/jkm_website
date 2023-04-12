@@ -245,7 +245,7 @@ export default {
       // 如果用户信息存在，将其解析为对象并填充到登录表单中
       const user = JSON.parse(userStr)
       this.loginUser.number = user.number
-      this.loginUser.password = user.password
+      this.loginUser.password = this.$Base64.decode(user.password)
       this.loginUser.remember = true
     }
   },
@@ -387,7 +387,6 @@ export default {
     userLogin(data) {
       this.$refs[data].validate(valid => {
         if (valid) {
-          this.handleLogin()
           if (/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(this.loginUser.number)) {
             const formData = new FormData();
             formData.append('email', this.loginUser.number);
@@ -399,14 +398,15 @@ export default {
             }).then(res => {
               if (res.data.success) {
                 const cookieStr = document.cookie
-                const token = cookieStr.split('=')
+                const tokenList = cookieStr.split('=')
                 console.log(cookieStr)
-                window.sessionStorage.setItem("token", token[1])
+                const token = this.$Base64.encode(tokenList[1])
+                window.localStorage.setItem("token", token)
                 this.$message({
-
                   message: res.data.msg,
                   type: 'success'
                 })
+                this.handleLogin()
                 this.$router.push("/home")
               } else {
                 this.$message({
@@ -433,14 +433,16 @@ export default {
             }).then(res => {
               if (res.data.success) {
                 const cookieStr = document.cookie
-                const token = cookieStr.split('=')
+                const tokenList = cookieStr.split('=')
                 console.log(cookieStr)
-                window.sessionStorage.setItem("token", token[1])
+                const token = this.$Base64.encode(tokenList[1])
+                window.localStorage.setItem("token", token)
                 this.$message({
 
                   message: res.data.msg,
                   type: 'success'
                 })
+                this.handleLogin()
                 this.$router.push("/home")
               } else {
                 this.$message({
@@ -470,6 +472,7 @@ export default {
       // 在这里处理登录逻辑，假设登录成功后返回一个包含用户信息的对象 user
       if (this.loginUser.remember) {
         // 如果用户选择了“记住密码”，将用户的登录信息保存在本地存储中
+        this.loginUser.password = this.$Base64.encode(this.loginUser.password)
         localStorage.setItem('user', JSON.stringify(this.loginUser))
       } else {
         // 否则清除本地存储中的用户信息

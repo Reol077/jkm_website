@@ -21,6 +21,9 @@ import '../src/assets/global.css'
 // 导入字体图标库
 import '../src/assets/iconfont/iconfont.css'
 
+// base64加密
+import {Base64} from 'js-base64'
+
 const app = createApp(App)
 
 const axiosInstance = axios.create({
@@ -30,6 +33,7 @@ const axiosInstance = axios.create({
 
 app.config.globalProperties.$http = axiosInstance
 app.config.globalProperties.$message = ElMessage
+app.config.globalProperties.$Base64 = Base64;
 
 // app.use(ElementPlus)
 app.use(router)

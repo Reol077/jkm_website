@@ -68,8 +68,8 @@ export default {
       this.$http.get('/verity/logout').then(res => {
         console.log(res)
       })
-      window.sessionStorage.clear()
-      this.$router.push('/')
+      window.localStorage.clear()
+      this.$router.push('/login')
     }
   }
 

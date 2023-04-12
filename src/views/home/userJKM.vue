@@ -1,51 +1,38 @@
 <template>
-  <div>
-    <input type="file" accept="image/*" ref="fileInput" @change="handleFileChange">
-    <button @click="handleUploadClick">Upload</button>
-    <img :src="imageUrl" alt="Uploaded Image" v-if="imageUrl">
+  <div class="base">
+    <el-card class="uploadCard">
+      <el-upload class="upload-demo box" drag accept=".jpg,.png" :limit="1" action="/api/test/test">
+        <i class="iconfont icon-shangchuan1 icon"></i>
+        <span>点击或拖拽上传</span>
+        <span>只能上传jpg/png文件</span>
+      </el-upload>
+    </el-card>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      imageUrl: null,
-      file: null,
-    };
-  },
-  methods: {
-    handleFileChange(event) {
-      this.file = event.target.files[0];
-      this.imageUrl = URL.createObjectURL(this.file);
-    },
-    async handleUploadClick() {
-      if (!this.file) {
-        alert('Please select a file to upload');
-        return;
-      }
+<script lang="ts" setup>
 
-      const formData = new FormData();
-      formData.append('file', this.file);
-
-      try {
-        const response = await fetch('http://example.com/upload', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log(data);
-          alert('File uploaded successfully');
-        } else {
-          throw new Error('File upload failed');
-        }
-      } catch (error) {
-        console.error(error);
-        alert('File upload failed');
-      }
-    },
-  },
-};
 </script>
+
+<style lang="less" scoped>
+.uploadCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .box {
+    width: 500px;
+
+    .icon {
+      font-size: 56px;
+      color: #939d99;
+    }
+
+    span {
+      display: block;
+      color: #939d99;
+      margin: 10px;
+    }
+  }
+}
+</style>
