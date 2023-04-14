@@ -12,6 +12,8 @@ import axios from 'axios'
 // import 'element-plus/dist/index.css'
 import { ElMessage } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
+import { ElMessageBox } from 'element-plus'
+import 'element-plus/theme-chalk/el-message-box.css'
 
 // 动画效果
 import 'animate.css'
@@ -22,7 +24,7 @@ import '../src/assets/global.css'
 import '../src/assets/iconfont/iconfont.css'
 
 // base64加密
-import {Base64} from 'js-base64'
+import { Base64 } from 'js-base64'
 
 const app = createApp(App)
 
@@ -33,6 +35,7 @@ const axiosInstance = axios.create({
 
 app.config.globalProperties.$http = axiosInstance
 app.config.globalProperties.$message = ElMessage
+app.config.globalProperties.$confirm = ElMessageBox.confirm
 app.config.globalProperties.$Base64 = Base64;
 
 // app.use(ElementPlus)

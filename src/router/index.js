@@ -23,7 +23,7 @@ const routes = [
     component: () => import('../views/home/userHome.vue'),
     children: [
       { path: '/home/jkm', name: 'jkm', component: () => import('../views/home/userJKM.vue') },
-      { path: '/home/xcm', name: 'xcm', component: () => import('../views/home/userXCM.vue') },
+      { path: '/home/hsjc', name: 'hsjc', component: () => import('../views/home/userDNA.vue') },
       { path: '/home/history', name: 'history', component: () => import('../views/home/userHistory.vue') }
     ]
   },

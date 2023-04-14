@@ -3,10 +3,10 @@
     <el-breadcrumb separator=">">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>上传</el-breadcrumb-item>
-      <el-breadcrumb-item>健康码</el-breadcrumb-item>
+      <el-breadcrumb-item>核酸检测</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="uploadCard">
-      <el-upload ref="uploadRef" class="upload-demo box" drag accept=".jpg,.png,jpeg" action="/api/ocr/jkmUpload"
+      <el-upload ref="uploadRef" class="upload-demo box" drag accept=".jpg,.png,jpeg" action="/api/ocr/hsjcUpload"
         with-credentials name="image" :on-success="handleSuccess" :on-error="handleError">
         <i class="iconfont icon-shangchuan1 icon"></i>
         <span>点击或拖拽上传</span>

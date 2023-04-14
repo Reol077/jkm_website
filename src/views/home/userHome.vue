@@ -21,10 +21,10 @@
               <span style="margin-left: 10px;">健康码</span>
             </template>
           </el-menu-item>
-          <el-menu-item index="/home/xcm">
+          <el-menu-item index="/home/hsjc">
             <template #title>
               <i class="iconfont icon-hangcheng"></i>
-              <span style="margin-left: 10px;">行程码</span>
+              <span style="margin-left: 10px;">核酸检测</span>
             </template>
           </el-menu-item>
         </el-sub-menu>
@@ -70,7 +70,14 @@ export default {
       })
       window.localStorage.clear()
       this.$router.push('/login')
+    },
+    checkCookie() {
+      const cookie = document.cookie
+      if (!cookie) { this.$router.push('/login') }
     }
+  },
+  created() {
+    this.checkCookie()
   }
 
 }
@@ -87,7 +94,7 @@ export default {
 }
 
 .el-aside {
-  background-color: #EBF1F6;
+  background-color: #76787a;
   transition: 0.5s;
 
   .logo {
@@ -96,7 +103,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #8dbb9d;
+    color: #8ffeb6;
 
     .logo-text {
       display: flex;
@@ -109,9 +116,9 @@ export default {
 
   .el-menu {
     border: none;
-    --el-menu-bg-color: #EBF1F6;
-    --el-menu-text-color: #8dbb9d;
-    --el-menu-active-color: #959b9f;
+    --el-menu-bg-color: #76787a;
+    --el-menu-text-color: #8ffeb6;
+    --el-menu-active-color: #ffffff;
   }
 }
 

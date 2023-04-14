@@ -7,3 +7,7 @@ body,
     padding: 0;
     min-width: 1366px;
 }
+
+.el-message-box {
+    z-index: 9999;
+}
