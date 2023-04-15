@@ -5,7 +5,7 @@
         <el-table-column type="index" />
         <el-table-column prop="number" label="学号" />
         <el-table-column prop="name" label="姓名" />
-        <el-table-column prop="isGreen" label="是否绿码" >
+        <el-table-column prop="isGreen" label="是否绿码">
           <template v-slot="scope">
             <el-tag v-if="scope.row.isGreen" type="success">绿码</el-tag>
           </template>
@@ -23,6 +23,16 @@ export default {
   data() {
     return {
       historyData: [
+        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
+        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
+        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
+        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
+        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
+        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
+        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
+        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
+        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
+        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
       ],
       tableData: {
         size: 5,
@@ -38,16 +48,6 @@ export default {
     handleNext() {
 
     },
-    getData() {
-      this.$http.get(`/user/all/${this.tableData.current}/${this.tableData.size}/${-1000}/${1000}/${1}`).then(
-        res => {
-          this.historyData = res.data.data.records
-        }
-      )
-    }
-  },
-  mounted() {
-    this.getData()
   }
 }
 </script>

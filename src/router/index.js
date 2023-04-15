@@ -3,7 +3,7 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
 const routes = [
-  { path: '/', redirect: '/home' },
+  { path: '/', redirect: '/login' },
   {
     path: '/login',
     name: 'login',
@@ -19,12 +19,12 @@ const routes = [
   {
     path: '/home',
     name: 'home',
-    redirect: '/home/history',
     component: () => import('../views/home/userHome.vue'),
     children: [
       { path: '/home/jkm', name: 'jkm', component: () => import('../views/home/userJKM.vue') },
       { path: '/home/hsjc', name: 'hsjc', component: () => import('../views/home/userDNA.vue') },
-      { path: '/home/history', name: 'history', component: () => import('../views/home/userHistory.vue') }
+      { path: '/home/history', name: 'history', component: () => import('../views/home/userHistory.vue') },
+      { path: "/home/admin", name: 'admin', component: () => import('../views/home/userAdmin.vue') }
     ]
   },
 ]

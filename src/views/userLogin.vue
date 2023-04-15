@@ -410,7 +410,6 @@ export default {
                 this.$router.push("/home")
               } else {
                 this.$message({
-
                   message: res.data.msg,
                   type: 'error'
                 })

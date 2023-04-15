@@ -27,7 +27,7 @@ module.exports = {
       Components({
         resolvers: [ElementPlusResolver()]
       }),
-    ]
+    ],
   },
   publicPath: './',
   outputDir: 'dist',

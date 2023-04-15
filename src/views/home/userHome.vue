@@ -9,7 +9,7 @@
         </div>
       </div>
       <el-menu unique-opened :collapse="isCollapse" :collapse-transition="false" :router="true"
-        default-active="/home/history">
+        default-active="/home/history" v-show="role == 'student'">
         <el-sub-menu index="1">
           <template #title>
             <i class="iconfont icon-shangchuan"></i>
@@ -31,6 +31,13 @@
         <el-menu-item index="/home/history">
           <i class="iconfont icon-shouye"></i>
           <span style="margin-left: 10px;">历史上传</span>
+        </el-menu-item>
+      </el-menu>
+      <el-menu unique-opened :collapse="isCollapse" :collapse-transition="false" :router="true"
+        default-active="/home/admin" v-show="role == 'teacher'">
+        <el-menu-item index="/home/admin">
+          <i class="iconfont icon-shuju"></i>
+          <span style="margin-left: 10px;">数据一览</span>
         </el-menu-item>
       </el-menu>
     </el-aside>
@@ -55,7 +62,8 @@ export default {
     return {
       isCollapse: false,
       isShow: true,
-      direction: true
+      direction: true,
+      role: ""
     }
   },
   methods: {
@@ -71,15 +79,27 @@ export default {
       window.localStorage.clear()
       this.$router.push('/login')
     },
-    checkCookie() {
-      const cookie = document.cookie
-      if (!cookie) { this.$router.push('/login') }
+    getRole() {
+      this.$http.get('/user/type').then(res => {
+        if (res.data.data == 0) this.role = "student"
+        else if (res.data.data == 1) this.role = "teacher"
+        else {
+          this.$message.error("error")
+          this.$router.push('/login')
+        }
+      }).catch(error => {
+        this.$message.error(error)
+      })
     }
   },
   created() {
-    this.checkCookie()
+    this.getRole()
+    if (this.role == "teacher") {
+      this.$router.push('/home/admin')
+    } else {
+      this.$router.push('/home/history')
+    }
   }
-
 }
 </script>
 
