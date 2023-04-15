@@ -14,33 +14,49 @@
       </el-upload>
     </el-card>
     <el-card class="tableBox">
-      <el-table :data="historyData" border tripe style="width: 100%;" v-show="Object.keys(historyData).length !== 0">
-        <el-table-column type="index" label="#"></el-table-column>
-        <el-table-column prop="jkmTime" label="上传时间">
-        </el-table-column>
-        <el-table-column prop="isGreen" label="是否绿码">
-          <template v-slot="scope">
-            <el-tag v-if="scope.row.isGreen" type="success">绿码</el-tag>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination layout="prev, pager, next" :page-size=tableData.size :total=tableData.total :prev-click="handlePrev"
-        :next-click="handleNext" v-show="Object.keys(historyData).length !== 0" />
-      <el-empty v-show="Object.keys(historyData).length === 0"></el-empty>
+      <a-table :dataSource="historyData" :columns="columns" :pagination="tableData" />
     </el-card>
   </div>
 </template>
 
 <script>
+import { Table } from 'ant-design-vue';
+import moment from 'moment'
+
+
 export default {
+  components: {
+    'a-table': Table,
+  },
   data() {
     return {
       historyData: [],
       tableData: {
-        size: 5,
-        total: 1,
-        current: 1
-      }
+        defaultCurrent: 1,
+        defaultPageSize: 3,
+        total: 0,
+        onChange: (current, size) => {
+          this.tableData.defaultCurrent = current;
+          this.tableData.defaultPageSize = size;
+          this.getData(),
+          this.$queuePostFlushCb
+        },
+
+      },
+      columns: [
+        {
+          title: '上传日期',
+          dataIndex: 'jkmTime',
+          customRender: (text) => {
+            return moment(text).format('YYYY-MM-DD HH:mm:ss')
+          }
+        },
+        {
+          title: '是否绿码',
+          dataIndex: 'isGreen',
+          customRender: (isGreen) => (isGreen ? '是' : '否'),
+        },
+      ],
     }
   },
   methods: {
@@ -54,20 +70,17 @@ export default {
     handleError() {
       this.$message.error("上传失败")
     },
-    handleNext() {
-
+    handlePaginationChange(newPage) {
+      this.tableData.current = newPage
     },
-    handlePrev() {
-
-    },
-    getData(){
-      this.$http.get(`/user/all/${this.tableData.current}/${this.tableData.size}/${-1000}/${1000}/${1}`).then(res=>{
+    getData() {
+      this.$http.get(`/user/all/${this.tableData.defaultCurrent}/${this.tableData.defaultPageSize}/${-1000}/${1000}/${1}`).then(res => {
         this.historyData = res.data.data.records
-        this.tableData.total=this.tableData.size*res.data.data.total
+        this.tableData.total = this.tableData.defaultPageSize * res.data.data.total
       })
-    }
+    },
   },
-  mounted(){
+  created() {
     this.getData()
   }
 }
