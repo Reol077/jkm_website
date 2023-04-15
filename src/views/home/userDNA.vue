@@ -14,27 +14,50 @@
       </el-upload>
     </el-card>
     <el-card class="tableBox">
-      <el-table :data="historyData" border tripe v-show="Object.keys(historyData).length !== 0">
-        <el-table-column prop="number" label="学号" />
-        <el-table-column prop="name" label="姓名" />
-        <el-table-column prop="isGreen" label="是否绿码">
-          <template v-slot="scope">
-            <el-tag v-if="scope.row.isGreen" type="success">绿码</el-tag>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-empty v-show="Object.keys(historyData).length === 0"></el-empty>
+      <a-table :dataSource="historyData" :columns="columns" :pagination="tableData" />
     </el-card>
   </div>
 </template>
 
 <script>
+import { Table } from 'ant-design-vue';
+import moment from 'moment'
 export default {
+  components: { 'a-table': Table },
   data() {
     return {
-      historyData: [
-        { number: "022020205", name: "sadff", isGreen: 1 }
-      ]
+      historyData: [],
+      tableData: {
+        defaultCurrent: 1,
+        defaultPageSize: 3,
+        total: 0,
+        onChange: (current, size) => {
+          this.tableData.defaultCurrent = current;
+          this.tableData.defaultPageSize = size;
+          this.getData(),
+            this.$queuePostFlushCb
+        },
+      },
+      columns: [
+        {
+          title: "#",
+          dataIndex: "index",
+        },
+        {
+          title: '上传日期',
+          dataIndex: 'hsjcTime',
+          customRender: (text) => {
+            return moment(text.text).format('YYYY-MM-DD HH:mm:ss')
+          }
+        },
+        {
+          title: '检测日期',
+          dataIndex: 'testTime',
+          customRender: (text) => {
+            return moment(text.text).format('YYYY-MM-DD HH:mm:ss')
+          }
+        },
+      ],
     }
   },
   methods: {
@@ -48,7 +71,18 @@ export default {
     handleError() {
       this.$message.error("上传失败")
     },
+    getData() {
+      this.$http.get(`/user/all/${this.tableData.defaultCurrent}/${this.tableData.defaultPageSize}/${-1000}/${1000}/${0}`).then(res => {
+        this.historyData = res.data.data.records
+        this.tableData.total = this.tableData.defaultPageSize * res.data.data.total
+        const newData = this.historyData.map((item, index) => ({ ...item, index: index + 1 }));
+        this.historyData=newData
+      })
+    }
   },
+  created() {
+    this.getData()
+  }
 }
 </script>
 

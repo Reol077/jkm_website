@@ -407,7 +407,13 @@ export default {
                   type: 'success'
                 })
                 this.handleLogin()
-                this.$router.push("/home")
+                this.$http.get('/user/type').then(res => {
+                  if (res.data.data) {
+                    this.$router.push("/home/admin")
+                  } else {
+                    this.$router.push("/home/history")
+                  }
+                })
               } else {
                 this.$message({
                   message: res.data.msg,
@@ -442,7 +448,13 @@ export default {
                   type: 'success'
                 })
                 this.handleLogin()
-                this.$router.push("/home")
+                this.$http.get('/user/type').then(res => {
+                  if (res.data.data) {
+                    this.$router.push("/home/admin")
+                  } else {
+                    this.$router.push("/home/history")
+                  }
+                })
               } else {
                 this.$message({
 

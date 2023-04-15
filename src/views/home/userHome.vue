@@ -94,11 +94,6 @@ export default {
   },
   created() {
     this.getRole()
-    if (this.role == "teacher") {
-      this.$router.push('/home/admin')
-    } else {
-      this.$router.push('/home/history')
-    }
   }
 }
 </script>

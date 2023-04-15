@@ -1,53 +1,88 @@
 <template>
   <div class="base">
     <el-card class="showCard">
-      <el-table :data="historyData" border tripe v-show="Object.keys(historyData).length !== 0">
-        <el-table-column type="index" />
-        <el-table-column prop="number" label="学号" />
-        <el-table-column prop="name" label="姓名" />
-        <el-table-column prop="isGreen" label="是否绿码">
-          <template v-slot="scope">
-            <el-tag v-if="scope.row.isGreen" type="success">绿码</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="date" label="核酸检测" />
-      </el-table>
-      <el-pagination layout="prev, pager, next" :page-size=tableData.size :total=tableData.total :prev-click="handlePrev"
-        :next-click="handleNext" v-show="Object.keys(historyData).length !== 0" />
-      <el-empty v-show="Object.keys(historyData).length === 0"></el-empty></el-card>
+      <a-table :dataSource="historyData" :columns="columns" :pagination="tableData" />
+    </el-card>
   </div>
 </template>
 
 <script>
+import { Table } from 'ant-design-vue';
+import moment from 'moment'
 export default {
+  components: {
+    'a-table': Table,
+  },
   data() {
     return {
       historyData: [
-        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
-        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
-        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
-        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
-        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
-        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
-        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
-        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
-        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
-        { number: "092620209", name: "顾凡", isGreen: true, date: "2022-07-21 7:30:00" },
       ],
       tableData: {
-        size: 5,
-        total: 50,
-        current: 1
-      }
+        defaultCurrent: 1,
+        defaultPageSize: 10,
+        total: 0,
+        onChange: (current, size) => {
+          this.tableData.defaultCurrent = current;
+          this.tableData.defaultPageSize = size;
+          this.getData(),
+            this.$queuePostFlushCb
+        },
+      },
+      columns: [
+        {
+          title: "#",
+          dataIndex: "index",
+        },
+        {
+          title:"学号",
+          dataIndex:"number"
+        },
+        {
+          title:"姓名",
+          dataIndex:"name",
+        },
+        {
+          title: '健康码上传日期',
+          dataIndex: 'jkmTime',
+          customRender: (text) => {
+            return moment(text.text).format('YYYY-MM-DD HH:mm:ss')
+          }
+        },
+        {
+          title: '是否绿码',
+          dataIndex: 'isGreen',
+          customRender: (isGreen) => (isGreen ? '是' : '否'),
+        },
+        {
+          title: '核酸检测上传日期',
+          dataIndex: 'hsjcTime',
+          customRender: (text) => {
+            return moment(text.text).format('YYYY-MM-DD HH:mm:ss')
+          }
+        },
+        {
+          title: '核酸检测时期',
+          dataIndex: 'testTime',
+          customRender: (text) => {
+            return moment(text.text).format('YYYY-MM-DD HH:mm:ss')
+          }
+        },
+      ],
     }
   },
   methods: {
-    handlePrev() {
-
+    getData() {
+      this.$http.get(`/user/all/${this.tableData.defaultCurrent}/${this.tableData.defaultPageSize}/${-1000}/${1000}/${1}`).then(res => {
+        this.historyData = res.data.data.records
+        this.tableData.total = this.tableData.defaultPageSize * res.data.data.total
+        console.log(res)
+        const newData = this.historyData.map((item, index) => ({ ...item, index: index + 1 }));
+        this.historyData=newData
+      })
     },
-    handleNext() {
-
-    },
+  },
+  mounted() {
+    this.getData()
   }
 }
 </script>

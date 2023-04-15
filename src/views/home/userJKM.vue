@@ -23,7 +23,6 @@
 import { Table } from 'ant-design-vue';
 import moment from 'moment'
 
-
 export default {
   components: {
     'a-table': Table,
@@ -41,14 +40,17 @@ export default {
           this.getData(),
           this.$queuePostFlushCb
         },
-
       },
       columns: [
+        {
+          title: "#",
+          dataIndex: "index",
+        },
         {
           title: '上传日期',
           dataIndex: 'jkmTime',
           customRender: (text) => {
-            return moment(text).format('YYYY-MM-DD HH:mm:ss')
+            return moment(text.text).format('YYYY-MM-DD HH:mm:ss')
           }
         },
         {
@@ -70,13 +72,12 @@ export default {
     handleError() {
       this.$message.error("上传失败")
     },
-    handlePaginationChange(newPage) {
-      this.tableData.current = newPage
-    },
     getData() {
       this.$http.get(`/user/all/${this.tableData.defaultCurrent}/${this.tableData.defaultPageSize}/${-1000}/${1000}/${1}`).then(res => {
         this.historyData = res.data.data.records
         this.tableData.total = this.tableData.defaultPageSize * res.data.data.total
+        const newData = this.historyData.map((item, index) => ({ ...item, index: index + 1 }));
+        this.historyData=newData
       })
     },
   },
