@@ -43,7 +43,7 @@ export default {
         {
           title: '是否绿码',
           dataIndex: 'isGreen',
-          customRender: (isGreen) => (isGreen ? '是' : '否'),
+          customRender: (isGreen) => (isGreen.value ? '是' : '否'),
         },
         {
           title: '核酸检测上传日期',

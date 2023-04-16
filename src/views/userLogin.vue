@@ -136,7 +136,7 @@
             style="display: flex;flex-direction: column;align-items: center;justify-content: center;width: 100%;height: 100%">
             <!-- 欢迎语 -->
             <div style="flex: 2;display: flex;align-items: center;font-size: 22px;color: #002FA7;font-weight: bold">
-              欢迎登入健康码管理系统
+              欢迎登入核酸检测管理系统
             </div>
             <!-- 欢迎图片 -->
             <div style="flex: 2">
