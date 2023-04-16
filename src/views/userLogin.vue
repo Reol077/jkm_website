@@ -409,7 +409,7 @@ export default {
                 this.handleLogin()
                 this.$http.get('/user/type').then(res => {
                   if (res.data.data) {
-                    this.$router.push("/home/admin")
+                    this.$router.push("/home/adminJKM")
                   } else {
                     this.$router.push("/home/history")
                   }
@@ -450,7 +450,7 @@ export default {
                 this.handleLogin()
                 this.$http.get('/user/type').then(res => {
                   if (res.data.data) {
-                    this.$router.push("/home/admin")
+                    this.$router.push("/home/adminJKM")
                   } else {
                     this.$router.push("/home/history")
                   }

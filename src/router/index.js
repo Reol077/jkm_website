@@ -24,7 +24,8 @@ const routes = [
       { path: '/home/jkm', name: 'jkm', component: () => import('../views/home/userJKM.vue') },
       { path: '/home/hsjc', name: 'hsjc', component: () => import('../views/home/userDNA.vue') },
       { path: '/home/history', name: 'history', component: () => import('../views/home/userHistory.vue') },
-      { path: "/home/admin", name: 'admin', component: () => import('../views/home/userAdmin.vue') }
+      { path: "/home/adminJKM", name: 'adminJKM', component: () => import('../views/home/userAdminJKM.vue') },
+      { path: "/home/adminHSJC", name: 'adminHSJC', component: () => import('../views/home/userAdminHSJC.vue') },
     ]
   },
 ]

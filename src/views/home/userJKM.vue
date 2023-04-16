@@ -67,6 +67,7 @@ export default {
       if (res.success) {
         this.$message.success(res.msg)
         this.getData
+        this.$queuePostFlushCb
       } else {
         this.$message.error(res.msg)
       }
@@ -80,7 +81,6 @@ export default {
         this.tableData.total = this.tableData.defaultPageSize * res.data.data.total
         const newData = this.historyData.map((item, index) => ({ ...item, index: index + 1 }));
         this.historyData = newData
-        console.log(newData)
         this.$queuePostFlushCb
       })
     },

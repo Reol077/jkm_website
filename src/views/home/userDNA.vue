@@ -36,7 +36,7 @@ export default {
           this.tableData.defaultCurrent = current;
           this.tableData.defaultPageSize = size;
           this.getData(),
-            this.$queuePostFlushCb
+          this.$queuePostFlushCb
         },
       },
       columns: [

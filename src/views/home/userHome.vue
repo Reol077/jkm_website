@@ -34,10 +34,14 @@
         </el-menu-item>
       </el-menu>
       <el-menu unique-opened :collapse="isCollapse" :collapse-transition="false" :router="true"
-        default-active="/home/admin" v-show="role == 'teacher'">
-        <el-menu-item index="/home/admin">
+        default-active="/home/adminJKM" v-show="role == 'teacher'">
+        <el-menu-item index="/home/adminJKM">
           <i class="iconfont icon-shuju"></i>
-          <span style="margin-left: 10px;">数据一览</span>
+          <span style="margin-left: 10px;">健康码</span>
+        </el-menu-item>
+        <el-menu-item index="/home/adminHSJC">
+          <i class="iconfont icon-shuju"></i>
+          <span style="margin-left: 10px;">核酸检测</span>
         </el-menu-item>
       </el-menu>
     </el-aside>
