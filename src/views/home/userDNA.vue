@@ -7,7 +7,8 @@
     </el-breadcrumb>
     <el-card class="uploadCard">
       <el-upload ref="uploadRef" class="upload-demo box" drag accept=".jpg,.png,jpeg" action="/api/ocr/hsjcUpload"
-        with-credentials name="image" :on-success="handleSuccess" :on-error="handleError">
+        with-credentials name="image" :on-success="handleSuccess" :on-error="handleError"
+        :before-upload="beforeAvatarUpload" :show-file-list="false">
         <i class="iconfont icon-shangchuan1 icon"></i>
         <span>点击或拖拽上传</span>
         <span>只能上传jpg/png文件</span>
@@ -64,6 +65,7 @@ export default {
     handleSuccess(res) {
       if (res.success) {
         this.$message.success(res.msg)
+        this.getData()
       } else {
         this.$message.error(res.msg)
       }
@@ -76,8 +78,17 @@ export default {
         this.historyData = res.data.data.records
         this.tableData.total = this.tableData.defaultPageSize * res.data.data.total
         const newData = this.historyData.map((item, index) => ({ ...item, index: index + 1 }));
-        this.historyData=newData
+        this.historyData = newData
+        this.$queuePostFlushCb
       })
+    },
+    beforeAvatarUpload(file) {
+      if (file.size / 1024 > 512) {
+        this.$message.error("图片大小不能超过512KB")
+        return false
+      } else {
+        return true
+      }
     }
   },
   created() {
