@@ -3,17 +3,21 @@
         <el-card class="showCard">
             <el-row :gutter="20">
                 <el-col :span="6">
-                    <el-input placeholder="请输入学号" v-model="tableData.number" clearable @clear="getDataByNumber"
-                        @keyup.enter="getDataByNumber">
+                    <el-input placeholder="请输入学号" v-model="tableData.number" clearable
+                        @clear="getDataByNumber(this.tableData.defaultCurrent, this.tableData.defaultPageSize)"
+                        @keyup.enter="getDataByNumber(this.tableData.defaultCurrent, this.tableData.defaultPageSize)">
                         <template v-slot:append>
-                            <el-button @click="getDataByNumber">
+                            <el-button
+                                @click="getDataByNumber(this.tableData.defaultCurrent, this.tableData.defaultPageSize)">
                                 <el-icon class="iconfont icon-sousuo"></el-icon>
                             </el-button>
                         </template>
                     </el-input>
                 </el-col>
                 <el-col :span="4">
-                    <el-input v-model="strTimeStart" clearable @clear="getDataByNumber" @keyup.enter="getDataByNumber">
+                    <el-input v-model="strTimeStart"
+                        @clear="getDataByNumber(this.tableData.defaultCurrent, this.tableData.defaultPageSize)"
+                        @keyup.enter="getDataByNumber(this.tableData.defaultCurrent, this.tableData.defaultPageSize)">
                         <template v-slot:append>
                             <el-button @click="changeCalShowStart">
                                 <el-icon class="iconfont icon-riqi"></el-icon>
@@ -23,7 +27,9 @@
                 </el-col>
                 <el-col :span="0.5">___</el-col>
                 <el-col :span="4">
-                    <el-input v-model="strTimeEnd" clearable @clear="getDataByNumber" @keyup.enter="getDataByNumber">
+                    <el-input v-model="strTimeEnd"
+                        @clear="getDataByNumber(this.tableData.defaultCurrent, this.tableData.defaultPageSize)"
+                        @keyup.enter="getDataByNumber(this.tableData.defaultCurrent, this.tableData.defaultPageSize)">
                         <template v-slot:append>
                             <el-button @click="changeCalShowEnd">
                                 <el-icon class="iconfont icon-riqi"></el-icon>
@@ -32,10 +38,13 @@
                     </el-input>
                 </el-col>
                 <el-col :span="2">
-                    <el-button @click="getDataByTime"><el-icon class="iconfont icon-sousuo"></el-icon></el-button>
+                    <el-button
+                        @click="getDataByTime(this.tableData.defaultCurrent, this.tableData.defaultPageSize)"><el-icon
+                            class="iconfont icon-sousuo"></el-icon></el-button>
                 </el-col>
                 <el-col :push="5" :span="2">
-                    <el-button @click="getData">显示全部</el-button>
+                    <el-button
+                        @click="getData(this.tableData.defaultCurrent, this.tableData.defaultPageSize)">显示全部</el-button>
                 </el-col>
             </el-row>
             <a-table :dataSource="historyData" :columns="columns" :pagination="tableData" style="margin-top: 10px;" />
@@ -75,17 +84,18 @@ export default {
                 dateEnd: dayjs(),
                 defaultCurrent: 1,
                 defaultPageSize: 5,
+                current: 1,
                 total: 0,
                 start: -1000,
                 end: 1000,
                 pageSizeOptions: ['5', '10', '15', '20'],
                 onChange: (current, size) => {
-                    this.tableData.defaultCurrent = current;
-                    this.tableData.defaultPageSize = size;
-                    if (!this.isNumber && !this.isTime) this.getData()
-                    else if (this.isNumber && !this.isTime) this.getDataByNumber()
-                    else if (!this.isNumber && this.isTime) this.getDataByTime()
-                    else this.getDataByTime()
+                    this.tableData.current = current;
+                    this.tableData.pageSize = size;
+                    if (!this.isNumber && !this.isTime) this.getData(current, size, true)
+                    else if (this.isNumber && !this.isTime) this.getDataByNumber(current, size, true)
+                    else if (!this.isNumber && this.isTime) this.getDataByTime(current, size, true)
+                    else this.getDataByTime(current, size)
                 },
             },
             columns: [
@@ -102,16 +112,18 @@ export default {
                     dataIndex: "name",
                 },
                 {
-                    title: '健康码上传日期',
-                    dataIndex: 'jkmTime',
+                    title: '核酸检测上传日期',
+                    dataIndex: 'hsjcTime',
                     customRender: (text) => {
                         return dayjs(text.text).format('YYYY-MM-DD HH:mm:ss')
                     }
                 },
                 {
-                    title: '是否绿码',
-                    dataIndex: 'isGreen',
-                    customRender: (isGreen) => (isGreen.value ? '是' : '否'),
+                    title: '核酸检测日期',
+                    dataIndex: 'testTiem',
+                    customRender: (text) => {
+                        return dayjs(text.text).format('YYYY-MM-DD HH:mm:ss')
+                    }
                 },
             ],
         }
@@ -125,10 +137,11 @@ export default {
         },
     },
     methods: {
-        getData() {
-            this.$http.get(`/user/all/${this.tableData.defaultCurrent}/${this.tableData.defaultPageSize}/${this.tableData.start}/${this.tableData.end}/${0}`).then(res => {
+        getData(current, pageSize, change = false) {
+            if (!change) this.tableData.current = 1
+            this.$http.get(`/user/all/${current}/${pageSize}/${this.tableData.start}/${this.tableData.end}/${0}`).then(res => {
                 this.historyData = res.data.data.records
-                this.tableData.total = this.tableData.defaultPageSize * res.data.data.total
+                this.tableData.total = pageSize * res.data.data.total
                 const newData = this.historyData.map((item, index) => ({ ...item, index: index + 1 }));
                 this.historyData = newData
                 this.$queuePostFlushCb
@@ -136,26 +149,28 @@ export default {
                 this.isTime = false
             })
         },
-        getDataByNumber() {
-            this.$http.get(`/user/all/${this.tableData.defaultCurrent}/${this.tableData.defaultPageSize}/${this.tableData.start}/${this.tableData.end}/${this.tableData.number}/${0}`).then(res => {
+        getDataByNumber(current, pageSize, change = false) {
+            if (!change) this.tableData.current = 1
+            this.$http.get(`/user/all/${current}/${pageSize}/${this.tableData.start}/${this.tableData.end}/${this.tableData.number}/${0}`).then(res => {
                 this.historyData = res.data.data.records
-                this.tableData.total = this.tableData.defaultPageSize * res.data.data.total
+                this.tableData.total = pageSize * res.data.data.total
                 const newData = this.historyData.map((item, index) => ({ ...item, index: index + 1 }));
                 this.historyData = newData
                 this.$queuePostFlushCb
                 this.isNumber = true
             })
         },
-        getDataByTime() {
+        getDataByTime(current, pageSize, change = false) {
+            if (!change) this.tableData.current = 1
             if (this.tableData.dateStart.diff(this.tableData.dateEnd, 'day') >= 0) {
                 this.$message.error("起始日期需要小于结束日期")
                 return false
             } else {
                 const start = this.tableData.dateStart.diff(this.tableData.dateNow, 'day')
                 const end = this.tableData.dateEnd.diff(this.tableData.dateNow, 'day')
-                this.$http.get(`/user/all/${this.tableData.defaultCurrent}/${this.tableData.defaultPageSize}/${start}/${end}/${this.tableData.number}/${0}`).then(res => {
+                this.$http.get(`/user/all/${current}/${pageSize}/${start}/${end}/${this.tableData.number}/${0}`).then(res => {
                     this.historyData = res.data.data.records
-                    this.tableData.total = this.tableData.defaultPageSize * res.data.data.total
+                    this.tableData.total = pageSize * res.data.data.total
                     const newData = this.historyData.map((item, index) => ({ ...item, index: index + 1 }));
                     this.historyData = newData
                     this.$queuePostFlushCb
@@ -179,7 +194,7 @@ export default {
         }
     },
     mounted() {
-        this.getData()
+        this.getData(this.tableData.defaultCurrent, this.tableData.defaultPageSize)
     }
 }
 </script>
